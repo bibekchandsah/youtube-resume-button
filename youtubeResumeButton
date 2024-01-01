@@ -1,0 +1,80 @@
+// ==UserScript==
+// @name         youtube video resume try
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  try to take over the world!
+// @author       Bibek
+// @match        https://www.youtube.com/*
+// @icon         https://www.youtube.com/s/desktop/bd3558ba/img/favicon_144x144.png
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    // Your code here...
+
+    function resumePlayback() {
+        var playButton = document.querySelector('.ytp-play-button.ytp-button'); // Adjust the selector as needed
+        var openedBackdrop = document.querySelector('tp-yt-iron-overlay-backdrop.opened'); // Adjust the selector as needed
+
+        if (playButton) {
+            playButton.click();
+        }
+
+        if (openedBackdrop) {
+            openedBackdrop.classList.remove('opened');
+            openedBackdrop.classList.add('openedd');
+        }
+    }
+
+    // Create a "Resume" button
+    var resumeButton = document.createElement('button');
+    resumeButton.textContent = 'Resume';
+    resumeButton.style.position = 'fixed';
+    resumeButton.style.top = '0';
+    resumeButton.style.left = '0';
+    resumeButton.style.zIndex = '9999'; // Set a high z-index to ensure it covers other elements
+    resumeButton.style.cursor = 'move'; // Set cursor to indicate draggability
+
+    var isDragging = false;
+    var offsetX, offsetY;
+
+    resumeButton.addEventListener('mousedown', function (e) {
+        isDragging = true;
+        offsetX = e.clientX - resumeButton.getBoundingClientRect().left;
+        offsetY = e.clientY - resumeButton.getBoundingClientRect().top;
+    });
+
+    document.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+
+        resumeButton.style.left = e.clientX - offsetX + 'px';
+        resumeButton.style.top = e.clientY - offsetY + 'px';
+    });
+
+    document.addEventListener('mouseup', function () {
+        isDragging = false;
+    });
+
+    resumeButton.addEventListener('click', resumePlayback);
+
+    // Add the button to the body or another appropriate container
+    document.body.appendChild(resumeButton);
+
+    // Function to check and click the "Resume" button whenever an element with class "opened" is present
+    function checkAndResume() {
+        var openedElement = document.querySelector('.opened');
+
+        // Check if an element with class "opened" is present, and trigger resumePlayback
+        if (openedElement) {
+            resumePlayback();
+        }
+    }
+
+    // Periodically check for the presence of an element with class "opened" (every 1000 milliseconds or 1 second)
+    setInterval(checkAndResume, 1000);
+
+
+
+})();
